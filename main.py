@@ -7,6 +7,7 @@ from inverted_index import InvertedIndexFactory
 from boolean_search import BooleanSearch
 from tf_idf_calculator import TF_IDF_Calculator
 from vector_model_search import VectorModelSearch
+from flask import Flask, request
 
 
 def run_spider():
@@ -96,11 +97,18 @@ def run_tf_idf_calculator():
 
     tools.save_text_in_file(tools.TF_IDF_PATH, dump)
 
+app = Flask(__name__)
+@app.route('/search', methods=['GET'])
+def index():
+    variable = request.args.get('q')
+    vms = VectorModelSearch()
+    return vms.search(variable)
 
 if __name__ == '__main__':
     # run_spider()
     # run_tokenizer()
     # run_inverted_index()
     # run_tf_idf_calculator()
-    vms = VectorModelSearch()
-    vms.search("Гамма излучение")
+    # vms = VectorModelSearch()
+    # vms.search("Гамма излучение")
+    app.run(debug=True)

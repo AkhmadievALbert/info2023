@@ -15,6 +15,11 @@ def dist_cosine(vec_a, vec_b):
 
 class VectorModelSearch:
 
+    def get_results_array(input_array):
+        output_dict = {"results": input_array}
+        output_json = json.dumps(output_dict)
+        return output_json
+
     def __init__(self):
         self.__tokenizer = Tokenizer()
         self.__all_docs_count = len(os.listdir(tools.LEMMATIZED_TEXTS_PATH))
@@ -60,7 +65,7 @@ class VectorModelSearch:
             distances[index] = dist_cosine(query_vector, document_vector)
 
         searched_indices = sorted(distances.items(), key=operator.itemgetter(1), reverse=True)
-
+        result = []
         for index in searched_indices:
             doc_id, tf_idf = index
 
@@ -68,4 +73,11 @@ class VectorModelSearch:
                 continue
 
             url = self.__indices[doc_id]
+            result.append(url)
             print("Index: {}\nURL:{}\nCosine:{}\n".format(doc_id, url, tf_idf))
+
+        output_dict = {"results": result}
+        output_json = json.dumps(output_dict)
+        print(result)
+        print(output_json)
+        return output_json
